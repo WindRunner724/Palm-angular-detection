@@ -2,7 +2,7 @@
 
 - 主函数
 
-  angle_estimation，主要进程在process方法内，多线程吊用process处理图片对
+  angle_estimation，主要进程在process方法内，多线程调用process处理图片对
 
 - 参数
 

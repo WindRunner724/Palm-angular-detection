@@ -7,19 +7,21 @@ GREEN = (0, 255, 0)
 BLUE = (255, 0, 0)
 
 
-def vis(img, img_pair, angular):
+def vis(img, palm_img, angular):
     kpt_idx_7 = [0, 1, 2, 5, 9, 13, 17]
-    plot(img=img, pos_2d=img_pair.kpt_pos_21[kpt_idx_7], pix_val=img_pair.kpt_pix_21[kpt_idx_7], angle=None, color=BLUE, text_pos=(20, 40))
-    plot(img=img, pos_2d=img_pair.kpt_pos_3,  pix_val=img_pair.kpt_pix_3, angle=angular, color=GREEN, text_pos=(40, 40))
-    plot_line(img=img, tri_pos_2d=img_pair.kpt_pos_3, color=RED)
+    # plot(img=img, pos_2d=palm_img.kpt_pos_21[kpt_idx_7], pix_val=palm_img.kpt_pix_21[kpt_idx_7], angle=None,
+    #      color=BLUE, text_pos=(20, 40))
+    plot(img=img, pos_2d=palm_img.kpt_pos_3,             pix_val=palm_img.kpt_pix_3,             angle=angular,
+         color=GREEN, text_pos=(40, 40))
+    plot_line(img=img, tri_pos_2d=palm_img.kpt_pos_3, color=RED)
     return 0
 
 
 def merge(img_pair, rtl_img):
     height, width = img_pair.height, img_pair.width
     img = np.zeros((height, width * 3, 3), dtype=np.uint8)
-    img[:, 0:width] = img_pair.rgb_img
-    img[:, width:2 * width] = img_pair.ir_img
+    img[:, 0:width] = img_pair.palm_img
+    img[:, width:2 * width] = img_pair.palm_img
     img[:, 2 * width:3 * width] = rtl_img
     return img
 
@@ -50,12 +52,15 @@ def plot(img, pos_2d, pix_val, angle, color, text_pos):
         x = int(position[0])
         y = int(position[1])
         cv.putText(img, str(int(pix_val[i])), (x, y), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, )
+        #cv.putText(img, str(i), (x, y), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, )
 
     if len(missed_points) != 0:
         text = f"missed points: {str(missed_points)}"
         cv.putText(img, text, text_pos, cv.FONT_HERSHEY_SIMPLEX, 0.5, color, )
 
     if angle is not None:
+        if np.isnan(angle[0]) or np.isnan(angle[1]):
+            return
         cv.putText(img, f"left_to_right: {str(int(angle[0]))}", (20, 20), cv.FONT_HERSHEY_SIMPLEX, 0.5, GREEN, )
         cv.putText(img, f"top_to_bottom: {str(int(angle[1]))}", (20, 40), cv.FONT_HERSHEY_SIMPLEX, 0.5, GREEN, )
 

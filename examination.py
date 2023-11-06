@@ -1,7 +1,7 @@
 import os
 
 
-def exam_id_corr(rgb_list, ir_list):
+def exam_id_corr(kpt_list, ir_list):
     id_r, id_i = 0, 0
     while id_r < len(rgb_list) & id_i < len(ir_list):
         if rgb_list[id_r][4] < ir_list[id_i][3]:
